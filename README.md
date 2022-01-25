@@ -1,3 +1,5 @@
+![Coverage](https://raw.githubusercontent.com/jardianoalmeida/Flutter-Github-Actions/master/coverage_badge.svg?sanitize=true)
+
 # flutter_github_actions
 
 A new Flutter project.
@@ -16,3 +18,5 @@ For help getting started with Flutter, view our
 samples, guidance on mobile development, and a full API reference.
 # Flutter-Github-Actions
 # Flutter-Github-Actions
+
+
