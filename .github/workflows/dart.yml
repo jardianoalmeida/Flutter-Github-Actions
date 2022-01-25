@@ -1,0 +1,46 @@
+name: Build on Push or PR
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+        include:
+          - os: ubuntu-latest
+            output-name: dlcov-linux
+          - os: macOS-latest
+            output-name: dlcov-mac
+          - os: windows-latest
+            output-name: dlcov.exe
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '2.2.3'
+          channel: 'stable'
+      - run: mkdir build
+      - run: dart pub get
+      - run: dartanalyzer .
+      - run: flutter test --coverage
+      - run: pub global activate --source path ../dlcov
+      - run: dlcov -c 80
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: coverage/lcov.info
+      - run: dart compile exe bin/dlcov.dart -o build/${{ matrix.output-name }}
+      - uses: actions/upload-artifact@v1
+        with:
+          name: dlcov-executables
+          path: build
